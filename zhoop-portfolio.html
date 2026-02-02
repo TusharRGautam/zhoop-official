@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zhoop | Innovate. Build. Grow.</title>
+    
+    <!-- Tailwind CSS (For Layouts) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --bg-color: #050505;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- OPTIMIZED SPACE BACKGROUND --- */
+        #space-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: #050505; /* Solid color is faster than gradient */
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            /* Removed heavy box-shadow from stars for performance */
+            opacity: 0.8;
+        }
+
+        /* Galaxy Cloud Effect (Simplified) */
+        .nebula {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(188, 19, 254, 0.1) 0%, rgba(0, 0, 0, 0) 60%);
+            border-radius: 50%;
+            /* Removed blur filter for performance */
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        /* --- STICKY LAYOUT MAGIC --- */
+        .sticky-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .sticky-section {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            /* Optimized Shadow */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.8);
+            will-change: transform; /* Performance Hint */
+        }
+
+        /* Z-Indexes for stacking order */
+        #hero { z-index: 1; background: transparent; }
+        #services { z-index: 2; background: #0a0a0f; } /* Solid colors are faster */
+        #clients { z-index: 3; background: #0d0d12; }
+        #work { z-index: 4; background: #080808; height: auto; min-height: 100vh; }
+        #contact { z-index: 5; background: #000; }
+
+        /* Typography */
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        
+        .gradient-text {
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- PROJECT LAYOUT STYLES --- */
+        .project-wrapper {
+            padding: 60px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 80px; 
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow: hidden; 
+        }
+
+        .project-row {
+            opacity: 1; 
+        }
+
+        .project-card-container {
+            width: 100%;
+            max-width: 650px;
+            height: 360px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #111;
+            overflow: hidden;
+            position: relative;
+            /* Simple shadow is faster */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card-container:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-5px);
+        }
+
+        .iframe-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #1a1a1a;
+        }
+
+        /* --- OPTIMIZED IFRAME (NO SCALING HACK) --- */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white; 
+            opacity: 1;
+        }
+        
+        .loading-indicator {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00f3ff;
+            font-size: 2rem;
+            z-index: 5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .iframe-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); /* Lighter overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 10;
+            transition: opacity 0.3s;
+        }
+        
+        .iframe-overlay.active { opacity: 0; pointer-events: none; }
+
+        .overlay-text {
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            border: 1px solid var(--neon-cyan);
+            padding: 8px 20px;
+            border-radius: 50px;
+            background: rgba(0,0,0,0.8);
+        }
+
+        /* --- SERVICE CARDS --- */
+        .service-card {
+            background: #111; /* Solid background for speed */
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s ease;
+            will-change: transform;
+            cursor: pointer;
+        }
+        .service-card:hover {
+            background: #1a1a1a;
+            transform: translateY(-5px);
+            border-color: var(--neon-cyan);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+        }
+
+        /* Interactive Elements */
+        a, button, .service-card, .project-card-container {
+            cursor: pointer;
+        }
+
+        /* --- CLIENT LOGO CARDS --- */
+        .client-logo-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            min-height: 180px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .client-logo-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--neon-cyan);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .client-logo-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 12px;
+            background: white;
+            padding: 15px;
+            min-height: 100px;
+        }
+
+        .client-logo {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            max-height: 80px;
+            transition: all 0.4s ease;
+        }
+
+        .client-name {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.4s ease;
+        }
+
+        .client-logo-card:hover .client-name {
+            color: var(--neon-cyan);
+        }
+
+        /* Footer */
+        .footer-link:hover { color: var(--neon-cyan); padding-left: 5px; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+    </style>
+</head>
+<body>
+
+    <!-- Space Background -->
+    <div id="space-bg">
+        <div class="nebula" style="top: 20%; left: 20%;"></div>
+        <div class="nebula" style="bottom: 10%; right: 10%; background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, rgba(0, 0, 0, 0) 60%);"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-black border-b border-white/10 transition-all duration-300">
+        <a href="#hero" class="interactable">
+            <img src="logo__2_-removebg-preview.png" alt="Zhoop Logo" class="h-12 w-auto object-contain">
+        </a>
+        <div class="hidden md:flex gap-8 text-sm font-medium">
+            <a href="#hero" class="hover:text-cyan-400 transition interactable">Home</a>
+            <a href="#services" class="hover:text-cyan-400 transition interactable">Services</a>
+            <a href="#clients" class="hover:text-cyan-400 transition interactable">Clients</a>
+            <a href="#work" class="hover:text-cyan-400 transition interactable">Work</a>
+            <a href="#contact" class="hover:text-cyan-400 transition interactable">Contact</a>
+        </div>
+        <a href="https://wa.me/918169151456" target="_blank" class="interactable px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full hover:bg-cyan-400 hover:text-black transition font-bold uppercase text-xs tracking-widest">
+            Let's Talk
+        </a>
+    </nav>
+
+    <div class="sticky-container">
+
+        <!-- SECTION 1: HERO (Sticky) -->
+        <section id="hero" class="sticky-section flex flex-col justify-center items-center text-center relative">
+            <div class="relative z-10 max-w-4xl px-4">
+                <div id="hero-tag" class="inline-block px-4 py-1 border border-white/20 rounded-full text-xs mb-6 uppercase tracking-widest text-gray-400 opacity-0">
+                    Digital Innovation Agency
+                </div>
+                <h1 id="hero-title" class="text-5xl md:text-7xl font-black leading-tight mb-6 opacity-0">
+                    INNOVATE. <br>
+                    <span class="gradient-text">BUILD.</span> GROW.
+                </h1>
+                <p id="hero-desc" class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed opacity-0">
+                    We turn complex problems into elegant digital solutions. From high-performance websites to immersive gaming experiences, Zhoop builds the future.
+                </p>
+                <div id="hero-btns" class="flex gap-4 justify-center opacity-0">
+                    <a href="#work" class="interactable px-8 py-3 bg-white text-black font-bold rounded-full hover:scale-105 transition text-sm">
+                        View Our Work
+                    </a>
+                    <a href="#contact" class="interactable px-8 py-3 border border-white/30 rounded-full hover:bg-white/10 transition text-sm">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-10 animate-bounce">
+                <i class="fas fa-chevron-down text-gray-500"></i>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: SERVICES (Sticky) -->
+        <section id="services" class="sticky-section flex flex-col justify-center items-center py-20">
+            <div class="container mx-auto px-6">
+                <div class="mb-12 text-center service-header opacity-0 translate-y-10">
+                    <h2 class="text-4xl font-bold mb-4">Our <span class="text-cyan-400">Services</span></h2>
+                    <div class="h-1 w-16 bg-purple-500 mx-auto"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/landing page.png" alt="Web Development" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">Web Development</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">Lightning fast, SEO-optimized websites tailored to your brand's unique identity.</p>
+                    </div>
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/landing page.png" alt="Landing Pages" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">Landing Pages</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">High-conversion landing pages designed to capture leads and drive sales instantly.</p>
+                    </div>
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/content creation.png" alt="Creative Portfolios" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">Creative Portfolios</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">Stunning visual showcases for artists and professionals that leave a lasting impression.</p>
+                    </div>
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/e-commerce-platform.png" alt="E-Commerce Platforms" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">E-Commerce Platforms</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">Robust online stores with seamless inventory and secure payment integration.</p>
+                    </div>
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/SEO.png" alt="SEO Optimization" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">SEO Optimization</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">Boost your online visibility with data-driven SEO strategies that drive organic traffic.</p>
+                    </div>
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/meta ads.avif" alt="Meta Ads (Facebook)" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">Meta Ads (Facebook)</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">Targeted advertising campaigns on Meta platforms to maximize ROI and reach your audience.</p>
+                    </div>
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/video edits.jpg" alt="Video Editing" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">Video Editing</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">Professional video editing with stunning effects and transitions for engaging content.</p>
+                    </div>
+                    <div class="service-card interactable p-6 rounded-xl opacity-0 translate-y-10">
+                        <img src="our-services/content creation.png" alt="Content Creation" class="service-icon mb-4">
+                        <h3 class="text-xl font-bold mb-2">Content Creation</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">Compelling content that tells your story and resonates with your target audience.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2.5: BRANDS THAT TRUST US (Sticky) -->
+        <section id="clients" class="sticky-section flex flex-col justify-center items-center py-20">
+            <div class="container mx-auto px-6">
+                <div class="mb-16 text-center clients-header opacity-0 translate-y-10">
+                    <h2 class="text-4xl font-bold mb-4">Brands That <span class="text-cyan-400">Trust Us</span></h2>
+                    <div class="h-1 w-16 bg-purple-500 mx-auto mb-4"></div>
+                    <p class="text-gray-400 text-sm max-w-2xl mx-auto">We're proud to have partnered with these amazing brands to bring their digital visions to life.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/ASW.jpg" alt="ASW Cars" class="client-logo">
+                        </div>
+                        <div class="client-name">ASW Cars</div>
+                    </div>
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/carelook.jpg" alt="Carelook" class="client-logo">
+                        </div>
+                        <div class="client-name">Carelook</div>
+                    </div>
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/gautam motors.png" alt="Gautam Motors" class="client-logo">
+                        </div>
+                        <div class="client-name">Gautam Motors</div>
+                    </div>
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/lunar steps.png" alt="Lunar Steps" class="client-logo">
+                        </div>
+                        <div class="client-name">Lunar Steps</div>
+                    </div>
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/master material.jpg" alt="Master Material" class="client-logo">
+                        </div>
+                        <div class="client-name">Master Material</div>
+                    </div>
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/mimi cafe & bistro.png" alt="Mimi Cafe & Bistro" class="client-logo">
+                        </div>
+                        <div class="client-name">Mimi Cafe & Bistro</div>
+                    </div>
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/powersthenics.jpg" alt="Powersthenics" class="client-logo">
+                        </div>
+                        <div class="client-name">Powersthenics</div>
+                    </div>
+                    <div class="client-logo-card interactable opacity-0 translate-y-10">
+                        <div class="client-logo-wrapper">
+                            <img src="our-clients/pratap jewellers.jpeg" alt="Pratap Jewellers" class="client-logo">
+                        </div>
+                        <div class="client-name">Pratap Jewellers</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 3: WORK (Sticky container) -->
+        <section id="work" class="relative bg-[#080808] z-30 pt-20 pb-40">
+            <div class="sticky top-0 bg-[#080808] z-20 py-6 border-b border-white/5 mb-10">
+                <div class="container mx-auto px-6 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-4xl font-bold">Featured <span class="gradient-text">Work</span></h2>
+                        <p class="text-gray-400 mt-1 text-sm">Scroll down to explore our universe.</p>
+                    </div>
+                    <div class="hidden md:block text-gray-500 text-xs uppercase tracking-widest">
+                        Interactive Showcase
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECTS LIST -->
+            <div class="project-wrapper px-4 md:px-10">
+                
+                <!-- Project 1 -->
+                <div class="project-row flex flex-col md:flex-row items-center justify-center gap-10">
+                    <div class="project-card-container interactable">
+                        <div class="iframe-wrapper">
+                            <div class="loading-indicator"><i class="fas fa-circle-notch fa-spin"></i></div>
+                            <div class="iframe-overlay" onclick="enableIframe(this)">
+                                <div class="overlay-text"><i class="fas fa-hand-pointer"></i> Interact</div>
+                            </div>
+                            <iframe src="https://aswcars.com/" loading="lazy" title="ASW Cars" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                    <div class="project-text w-full md:w-1/3 text-center md:text-left">
+                        <div class="text-cyan-400 text-sm font-bold uppercase tracking-widest mb-2">Automotive</div>
+                        <h3 class="text-3xl font-black mb-4">ASW CARS</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">A premium digital showroom designed for luxury automotive sales.</p>
+                        <a href="https://aswcars.com/" target="_blank" class="interactable inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-cyan-400 hover:text-black hover:border-cyan-400 transition text-sm font-bold uppercase">
+                            Visit Website <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-row flex flex-col md:flex-row-reverse items-center justify-center gap-10">
+                    <div class="project-card-container interactable">
+                        <div class="iframe-wrapper">
+                            <div class="loading-indicator"><i class="fas fa-circle-notch fa-spin"></i></div>
+                            <div class="iframe-overlay" onclick="enableIframe(this)">
+                                <div class="overlay-text"><i class="fas fa-hand-pointer"></i> Play Game</div>
+                            </div>
+                            <iframe src="https://freakxgames.com/" loading="lazy" title="FreakX Games" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                    <div class="project-text w-full md:w-1/3 text-center md:text-right">
+                        <div class="text-purple-400 text-sm font-bold uppercase tracking-widest mb-2">Gaming Hub</div>
+                        <h3 class="text-3xl font-black mb-4">FREAKX GAMES</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">A dynamic HTML5 gaming portal hosting hundreds of instant-play games.</p>
+                        <a href="https://freakxgames.com/" target="_blank" class="interactable inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-purple-400 hover:text-black hover:border-purple-400 transition text-sm font-bold uppercase">
+                            Visit Website <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-row flex flex-col md:flex-row items-center justify-center gap-10">
+                    <div class="project-card-container interactable">
+                        <div class="iframe-wrapper">
+                            <div class="loading-indicator"><i class="fas fa-circle-notch fa-spin"></i></div>
+                            <div class="iframe-overlay" onclick="enableIframe(this)">
+                                <div class="overlay-text"><i class="fas fa-hand-pointer"></i> Explore</div>
+                            </div>
+                            <iframe src="https://kidskite.app/" loading="lazy" title="KidsKite" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                    <div class="project-text w-full md:w-1/3 text-center md:text-left">
+                        <div class="text-yellow-400 text-sm font-bold uppercase tracking-widest mb-2">EdTech</div>
+                        <h3 class="text-3xl font-black mb-4">KIDSKITE</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">An engaging educational platform for children combining colorful learning modules.</p>
+                        <a href="https://kidskite.app/" target="_blank" class="interactable inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-yellow-400 hover:text-black hover:border-yellow-400 transition text-sm font-bold uppercase">
+                            Visit Website <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-row flex flex-col md:flex-row-reverse items-center justify-center gap-10">
+                    <div class="project-card-container interactable">
+                        <div class="iframe-wrapper">
+                            <div class="loading-indicator"><i class="fas fa-circle-notch fa-spin"></i></div>
+                            <div class="iframe-overlay" onclick="enableIframe(this)">
+                                <div class="overlay-text"><i class="fas fa-hand-pointer"></i> View Menu</div>
+                            </div>
+                            <iframe src="https://mimicafeandbistro.com/" loading="lazy" title="Mimi Cafe" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                    <div class="project-text w-full md:w-1/3 text-center md:text-right">
+                        <div class="text-pink-400 text-sm font-bold uppercase tracking-widest mb-2">Hospitality</div>
+                        <h3 class="text-3xl font-black mb-4">MIMI CAFE</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">A chic digital presence for a modern bistro. Features an interactive menu and storytelling.</p>
+                        <a href="https://mimicafeandbistro.com/" target="_blank" class="interactable inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-pink-400 hover:text-black hover:border-pink-400 transition text-sm font-bold uppercase">
+                            Visit Website <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-row flex flex-col md:flex-row items-center justify-center gap-10">
+                    <div class="project-card-container interactable">
+                        <div class="iframe-wrapper">
+                            <div class="loading-indicator"><i class="fas fa-circle-notch fa-spin"></i></div>
+                            <div class="iframe-overlay" onclick="enableIframe(this)">
+                                <div class="overlay-text"><i class="fas fa-hand-pointer"></i> Play Game</div>
+                            </div>
+                            <iframe src="https://gameskite.com/" loading="lazy" title="GamesKite" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                    <div class="project-text w-full md:w-1/3 text-center md:text-left">
+                        <div class="text-green-400 text-sm font-bold uppercase tracking-widest mb-2">Gaming Platform</div>
+                        <h3 class="text-3xl font-black mb-4">GAMESKITE</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">A next-gen online gaming hub offering a vast library of casual games.</p>
+                        <a href="https://gameskite.com/" target="_blank" class="interactable inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-green-400 hover:text-black hover:border-green-400 transition text-sm font-bold uppercase">
+                            Visit Website <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-row flex flex-col md:flex-row-reverse items-center justify-center gap-10">
+                    <div class="project-card-container interactable">
+                        <div class="iframe-wrapper">
+                            <div class="loading-indicator"><i class="fas fa-circle-notch fa-spin"></i></div>
+                            <div class="iframe-overlay" onclick="enableIframe(this)">
+                                <div class="overlay-text"><i class="fas fa-hand-pointer"></i> View Services</div>
+                            </div>
+                            <iframe src="https://gautammotors.in/" loading="lazy" title="Gautam Motors" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                    <div class="project-text w-full md:w-1/3 text-center md:text-right">
+                        <div class="text-orange-400 text-sm font-bold uppercase tracking-widest mb-2">Automotive Service</div>
+                        <h3 class="text-3xl font-black mb-4">GAUTAM MOTORS</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">A professional service showcase for automotive care and appointments.</p>
+                        <a href="https://gautammotors.in/" target="_blank" class="interactable inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-orange-400 hover:text-black hover:border-orange-400 transition text-sm font-bold uppercase">
+                            Visit Website <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 7 -->
+                <div class="project-row flex flex-col md:flex-row items-center justify-center gap-10">
+                    <div class="project-card-container interactable">
+                        <div class="iframe-wrapper">
+                            <div class="loading-indicator"><i class="fas fa-circle-notch fa-spin"></i></div>
+                            <div class="iframe-overlay" onclick="enableIframe(this)">
+                                <div class="overlay-text"><i class="fas fa-hand-pointer"></i> Play & Learn</div>
+                            </div>
+                            <iframe src="https://kids.freakxgames.com/" loading="lazy" title="Kids Portal" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                    <div class="project-text w-full md:w-1/3 text-center md:text-left">
+                        <div class="text-blue-400 text-sm font-bold uppercase tracking-widest mb-2">Interactive Learning</div>
+                        <h3 class="text-3xl font-black mb-4">KIDS PORTAL</h3>
+                        <p class="text-gray-400 leading-relaxed mb-6">A dedicated safe space for kids' entertainment and learning.</p>
+                        <a href="https://kids.freakxgames.com/" target="_blank" class="interactable inline-flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-blue-400 hover:text-black hover:border-blue-400 transition text-sm font-bold uppercase">
+                            Visit Website <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-20">
+                <p class="text-gray-500 text-sm">Keep scrolling for contact info</p>
+                <i class="fas fa-arrow-down text-gray-500 animate-bounce mt-2"></i>
+            </div>
+        </section>
+
+
+        <!-- SECTION 4: CONTACT -->
+        <section id="contact" class="sticky-section flex flex-col justify-between pt-20 pb-5 bg-black">
+            
+            <div class="container mx-auto px-6 flex-grow flex flex-col justify-center items-center text-center">
+                <h2 class="contact-title text-5xl md:text-7xl font-black mb-6 opacity-0 translate-y-10">LET'S <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">COLLABORATE</span></h2>
+                
+                <p class="contact-desc text-lg text-gray-400 mb-10 max-w-2xl opacity-0 translate-y-10">
+                    Ready to take your business to the next level? We are ready to build it.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
+                    <div class="contact-card interactable p-6 border border-white/10 rounded-2xl hover:bg-white/5 transition group cursor-pointer opacity-0 translate-y-10">
+                        <i class="fas fa-envelope text-2xl mb-3 text-gray-500 group-hover:text-white transition"></i>
+                        <h3 class="text-lg font-bold">Email Us</h3>
+                        <p class="text-gray-400 mt-1 text-sm">tushargautam@zhoop.in</p>
+                    </div>
+                    
+                    <a href="https://wa.me/918169151456" target="_blank" class="contact-card interactable p-6 border border-white/10 rounded-2xl hover:bg-green-900/20 transition group cursor-pointer opacity-0 translate-y-10">
+                        <i class="fab fa-whatsapp text-2xl mb-3 text-green-500"></i>
+                        <h3 class="text-lg font-bold">WhatsApp</h3>
+                        <p class="text-gray-400 mt-1 text-sm">+91 8169151456</p>
+                    </a>
+                </div>
+            </div>
+
+            <footer class="border-t border-white/10 pt-8 pb-4 px-6 mt-8">
+                <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="interactable">
+                        <img src="logo__2_-removebg-preview.png" alt="Zhoop Logo" class="h-10 w-auto object-contain">
+                    </div>
+                    
+                    <div class="flex gap-6 text-xs text-gray-400">
+                        <a href="blog.html" class="footer-link interactable transition">Blog</a>
+                        <a href="#" class="footer-link interactable transition">Instagram</a>
+                        <a href="#" class="footer-link interactable transition">LinkedIn</a>
+                        <a href="#" class="footer-link interactable transition">Twitter</a>
+                    </div>
+                    
+                    <div class="text-gray-600 text-xs">
+                        &copy; 2024 Zhoop Technologies. All Rights Reserved.
+                    </div>
+                </div>
+            </footer>
+        </section>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- STARS GENERATOR ---
+        function createStars() {
+            const bg = document.getElementById('space-bg');
+            // Reduced star count for performance
+            for(let i=0; i<50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 1;
+                const duration = Math.random() * 3 + 2;
+                
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.setProperty('--duration', duration + 's');
+                star.style.animationDelay = Math.random() * 5 + 's';
+                
+                bg.appendChild(star);
+            }
+        }
+        createStars();
+
+        // --- ANIMATIONS (FASTER & SMOOTHER) ---
+
+        // 1. HERO ANIMATION
+        const tl = gsap.timeline();
+        tl.to("#hero-tag", { opacity: 1, duration: 0.6, ease: "power2.out" })
+          .to("#hero-title", { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.2)", startAt: { scale: 0.8 } }, "-=0.4")
+          .to("#hero-desc", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", startAt: { y: 20 } }, "-=0.6")
+          .to("#hero-btns", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", startAt: { y: 20 } }, "-=0.6");
+
+        // 2. SERVICES ANIMATION (Faster)
+        gsap.to(".service-header", {
+            scrollTrigger: { trigger: "#services", start: "top 85%" },
+            opacity: 1, y: 0, duration: 0.5
+        });
+
+        gsap.to(".service-card", {
+            scrollTrigger: {
+                trigger: "#services",
+                start: "top 85%", 
+                toggleActions: "play none none reverse"
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.05,
+            ease: "back.out(1.5)"
+        });
+
+        // 2.5. CLIENTS ANIMATION
+        gsap.to(".clients-header", {
+            scrollTrigger: { trigger: "#clients", start: "top 85%" },
+            opacity: 1, y: 0, duration: 0.6
+        });
+
+        gsap.to(".client-logo-card", {
+            scrollTrigger: {
+                trigger: "#clients",
+                start: "top 85%", 
+                toggleActions: "play none none reverse"
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: "back.out(1.3)"
+        });
+
+
+        // 3. PROJECT ROW ANIMATION (Immediate load)
+        const projectRows = document.querySelectorAll('.project-row');
+        projectRows.forEach((row, i) => {
+            const card = row.querySelector('.project-card-container');
+            const text = row.querySelector('.project-text');
+            const isEven = i % 2 === 0;
+            const cardX = isEven ? -50 : 50;
+            const textX = isEven ? 50 : -50;
+
+            gsap.fromTo(card, 
+                { opacity: 0, x: cardX },
+                {
+                    scrollTrigger: { trigger: row, start: "top 95%", toggleActions: "play none none reverse" },
+                    x: 0, opacity: 1, duration: 0.6, ease: "power2.out"
+                }
+            );
+
+            gsap.fromTo(text, 
+                { opacity: 0, x: textX },
+                {
+                    scrollTrigger: { trigger: row, start: "top 95%", toggleActions: "play none none reverse" },
+                    x: 0, opacity: 1, duration: 0.6, delay: 0, ease: "power2.out"
+                }
+            );
+        });
+
+
+        // 4. CONTACT ANIMATION (Faster)
+        const contactTL = gsap.timeline({
+            scrollTrigger: { trigger: "#contact", start: "top 85%" }
+        });
+        
+        contactTL.to(".contact-title", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" })
+                 .to(".contact-desc", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.3")
+                 .to(".contact-card", { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "back.out(1.2)" }, "-=0.3");
+
+
+        // 5. IFRAME & UTILITIES
+        function enableIframe(element) {
+            element.classList.add('active'); 
+            const wrapper = element.parentElement;
+            wrapper.addEventListener('mouseleave', () => {
+                setTimeout(() => { element.classList.remove('active'); }, 1000);
+            }, {once: true});
+        }
+
+        function hideLoader(iframe) {
+            const loader = iframe.parentElement.querySelector('.loading-indicator');
+            if(loader) {
+                loader.style.opacity = 0;
+                setTimeout(() => { loader.style.display = 'none'; }, 300);
+            }
+        }
+
+        // Failsafe loader hide
+        setTimeout(() => {
+            document.querySelectorAll('.loading-indicator').forEach(loader => {
+                loader.style.opacity = 0;
+                setTimeout(() => loader.style.display = 'none', 300);
+            });
+        }, 3000);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Zhoop Blog - Best web development company insights. Discover why Zhoop is the best website developer for your business. Learn about web development trends and digital solutions.">
+    <meta name="keywords" content="best web development, best website developer, best web development company, Zhoop, web developer, digital agency">
+    <title>Blog | Zhoop - Best Web Development Company & Website Developer</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --bg-color: #050505;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .blog-card {
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-cyan);
+        }
+
+        .blog-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .blog-card:hover .blog-image {
+            transform: scale(1.05);
+        }
+
+        .blog-date {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--neon-cyan);
+            color: black;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+
+        .blog-content {
+            padding: 24px;
+        }
+
+        .blog-category {
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .blog-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .blog-excerpt {
+            color: #999;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .blog-read-time {
+            color: #666;
+            font-size: 0.75rem;
+        }
+
+        .blog-read-more {
+            color: var(--neon-cyan);
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: gap 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .blog-read-more:hover {
+            gap: 12px;
+        }
+
+        .footer-link:hover { 
+            color: var(--neon-cyan); 
+            padding-left: 5px; 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-black border-b border-white/10">
+        <a href="zhoop-portfolio.html">
+            <img src="logo__2_-removebg-preview.png" alt="Zhoop Logo" class="h-12 w-auto object-contain">
+        </a>
+        <div class="hidden md:flex gap-8 text-sm font-medium">
+            <a href="zhoop-portfolio.html#hero" class="hover:text-cyan-400 transition">Home</a>
+            <a href="zhoop-portfolio.html#services" class="hover:text-cyan-400 transition">Services</a>
+            <a href="zhoop-portfolio.html#clients" class="hover:text-cyan-400 transition">Clients</a>
+            <a href="zhoop-portfolio.html#work" class="hover:text-cyan-400 transition">Work</a>
+            <a href="blog.html" class="text-cyan-400 transition">Blog</a>
+            <a href="zhoop-portfolio.html#contact" class="hover:text-cyan-400 transition">Contact</a>
+        </div>
+        <a href="https://wa.me/918169151456" target="_blank" class="px-5 py-2 border border-cyan-400 text-cyan-400 rounded-full hover:bg-cyan-400 hover:text-black transition font-bold uppercase text-xs tracking-widest">
+            Let's Talk
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-20 px-6 min-h-screen">
+        <div class="container mx-auto max-w-6xl">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="text-5xl md:text-6xl font-black mb-6">
+                    Our <span class="gradient-text">Blog</span>
+                </h1>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+                    Insights, tips, and industry expertise from Zhoop - your trusted digital partner and the best web development company
+                </p>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Blog Post 1: Web Development -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/landing page.png" alt="Best Web Development Company Zhoop" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Web Development</div>
+                        <h2 class="blog-title">Why Zhoop is the Best Web Development Company for Your Business</h2>
+                        <p class="blog-excerpt">
+                            Discover what makes Zhoop the best web development company in the industry. From cutting-edge technology to exceptional customer service, learn how we deliver world-class web development solutions.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 5 min read</span>
+                            <a href="blog-web-development.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 2: Website Developer -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/landing page.png" alt="Best Website Developer Zhoop Team" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Development</div>
+                        <h2 class="blog-title">Finding the Best Website Developer: The Zhoop Advantage</h2>
+                        <p class="blog-excerpt">
+                            Looking for the best website developer? Zhoop combines technical expertise with creative innovation to build high-performance, SEO-optimized websites that drive real business results.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 4 min read</span>
+                            <a href="blog-website-developer.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 3: Landing Pages -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/landing page.png" alt="High Converting Landing Pages" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Landing Pages</div>
+                        <h2 class="blog-title">How to Create High-Converting Landing Pages That Drive Sales</h2>
+                        <p class="blog-excerpt">
+                            Learn the secrets of creating landing pages that convert. Discover best practices for landing page design, copywriting, and optimization that maximize your ROI and capture more leads.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 6 min read</span>
+                            <a href="blog-landing-pages.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 4: E-Commerce -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/e-commerce-platform.png" alt="Best E-Commerce Platform Development" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">E-Commerce</div>
+                        <h2 class="blog-title">Building the Best E-Commerce Platform for Your Online Store</h2>
+                        <p class="blog-excerpt">
+                            From Shopify to custom solutions, explore how to choose and build the best e-commerce platform. Learn about payment integration, inventory management, and creating seamless shopping experiences.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 7 min read</span>
+                            <a href="blog-ecommerce.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 5: SEO -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/SEO.png" alt="SEO Optimization Best Practices" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">SEO</div>
+                        <h2 class="blog-title">SEO Best Practices: How to Rank #1 on Google in 2026</h2>
+                        <p class="blog-excerpt">
+                            Master the latest SEO strategies and techniques. Learn how to optimize your website for search engines, improve rankings, and drive organic traffic with proven SEO best practices.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 8 min read</span>
+                            <a href="blog-seo.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 6: Meta Ads -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/meta ads.avif" alt="Facebook Meta Ads Strategy" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Digital Marketing</div>
+                        <h2 class="blog-title">Meta Ads Mastery: Facebook Advertising Strategy for 2026</h2>
+                        <p class="blog-excerpt">
+                            Unlock the power of Meta advertising. Discover how to create high-ROI Facebook and Instagram ad campaigns, target the right audience, and maximize your advertising budget effectively.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 6 min read</span>
+                            <a href="blog-meta-ads.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 7: Video Editing -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/video edits.jpg" alt="Professional Video Editing Services" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Video Production</div>
+                        <h2 class="blog-title">Professional Video Editing: Creating Engaging Content That Converts</h2>
+                        <p class="blog-excerpt">
+                            Transform raw footage into captivating stories. Learn professional video editing techniques, software recommendations, and how quality video content boosts engagement and conversions.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 5 min read</span>
+                            <a href="blog-video-editing.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 8: Content Creation -->
+                <article class="blog-card">
+                    <div class="blog-image-container">
+                        <img src="our-services/content creation.png" alt="Content Creation Strategy" class="blog-image" style="object-fit: contain; background: white; padding: 20px;">
+                        <div class="blog-date">
+                            <span>Jan 2026</span>
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Content Marketing</div>
+                        <h2 class="blog-title">Content Creation Strategy: Building a Brand That Resonates</h2>
+                        <p class="blog-excerpt">
+                            Master the art of content creation. Discover how to craft compelling content that tells your brand story, engages your audience, and drives measurable business growth across all platforms.
+                        </p>
+                        <div class="blog-meta">
+                            <span class="blog-read-time"><i class="fas fa-clock"></i> 7 min read</span>
+                            <a href="blog-content-creation.html" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 pt-8 pb-4 px-6">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <img src="logo__2_-removebg-preview.png" alt="Zhoop Logo" class="h-10 w-auto object-contain">
+            </div>
+            
+            <div class="flex gap-6 text-xs text-gray-400">
+                <a href="blog.html" class="footer-link transition">Blog</a>
+                <a href="#" class="footer-link transition">Instagram</a>
+                <a href="#" class="footer-link transition">LinkedIn</a>
+                <a href="#" class="footer-link transition">Twitter</a>
+            </div>
+            
+            <div class="text-gray-600 text-xs">
+                &copy; 2024 Zhoop Technologies. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

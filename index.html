@@ -75,34 +75,30 @@
             background: radial-gradient(circle, var(--purple) 0%, transparent 70%);
         }
 
-        /* ── CUSTOM CURSOR ── */
-        #cursor-dot {
-            width: 8px; height: 8px;
-            background: var(--cyan);
-            border-radius: 50%;
+        /* ── CUSTOM LIQUID GOOEY CURSOR ── */
+        .cursor-goo-container {
             position: fixed;
-            top: 0; left: 0;
+            inset: 0;
+            pointer-events: none;
             z-index: 9999;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+            filter: url('#goo');
         }
-        #cursor-ring {
-            width: 38px; height: 38px;
-            border: 1.5px solid rgba(0,245,255,0.5);
+        .goo-bubble {
+            position: absolute;
+            left: 0; top: 0;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
             border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 9998;
             pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: border-color 0.3s;
+            will-change: transform;
         }
-        body:has(a:hover) #cursor-ring,
-        body:has(button:hover) #cursor-ring {
-            width: 55px; height: 55px;
-            border-color: var(--pink);
+        /* Lead bubble (the core pointer) is smaller and white for focus */
+        .goo-bubble:nth-child(1) {
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
         }
 
         /* ── CANVAS BACKGROUND ── */
@@ -1252,9 +1248,28 @@
     <div class="ambient-glow glow-1"></div>
     <div class="ambient-glow glow-2"></div>
 
-    <!-- Custom Cursor -->
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
+    <!-- SVG Gooey Filter -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+                <feBlend in="SourceGraphic" in2="goo" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Custom Liquid Gooey Cursor -->
+    <div class="cursor-goo-container">
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+    </div>
 
     <!-- Particle Canvas -->
     <canvas id="particle-canvas"></canvas>
@@ -1368,7 +1383,7 @@
     <section id="services">
         <div style="max-width:1200px;margin:0 auto;">
             <div class="section-label reveal-up">Our Services</div>
-            <h2 class="section-title reveal-up">
+            <h2 class="section-title reveal-up no-scramble">
                 11 Disciplines.<br>
                 <span class="text-gradient-hero">One Studio.</span>
             </h2>
@@ -1448,11 +1463,15 @@
     </section>
 
     <!-- ── PHILOSOPHY / ABOUT ── -->
-    <section id="about" style="position:relative; z-index:2; padding:120px 48px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:rgba(255,255,255,0.01);">
-        <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1.2fr; gap:80px; align-items:center;">
+    <section id="about" style="position:relative; z-index:2; padding:130px 48px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background: radial-gradient(circle at 10% 20%, rgba(0, 245, 255, 0.04) 0%, rgba(168, 85, 247, 0.06) 50%, #030507 100%), #060812; overflow:hidden;">
+        
+        <!-- Large Backdrop Outline Text -->
+        <div style="position:absolute; right: -4%; top: 35%; font-family:'Syne',sans-serif; font-size:clamp(120px, 22vw, 320px); font-weight:900; color:transparent; -webkit-text-stroke:1.5px rgba(168, 85, 247, 0.04); letter-spacing:-0.05em; pointer-events:none; z-index:0; user-select:none;">MINDSET</div>
+        
+        <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1.2fr; gap:80px; align-items:center; position:relative; z-index:1;">
             <div class="reveal-left">
                 <div class="section-label">Our Philosophy</div>
-                <h2 class="section-title" style="margin-bottom:30px; font-size:clamp(32px, 4.5vw, 64px);">We build digital products that command attention.</h2>
+                <h2 class="section-title no-scramble reveal-wipe" style="margin-bottom:30px; font-size:clamp(36px, 5vw, 68px); font-weight:800; line-height:1.0; clip-path:polygon(0 0, 0 0, 0 100%, 0 100%);">We build digital products that <span class="text-gradient-hero">command attention.</span></h2>
                 <p style="font-size:1.05rem; color:var(--muted); line-height:1.8; margin-bottom:40px;">
                     Zhoop is a boutique digital agency based in Delhi NCR. We partner with forward-thinking brands to build high-performance web systems, unforgettable brand identities, and custom marketing pipelines.
                 </p>
@@ -1530,7 +1549,7 @@
     <section id="work">
         <div style="max-width:1300px;margin:0 auto;padding:0 0;">
             <div class="section-label reveal-up">Featured Work</div>
-            <h2 class="section-title reveal-up">
+            <h2 class="section-title reveal-up no-scramble">
                 Projects that <span class="text-gradient-hero">hit different.</span>
             </h2>
         </div>
@@ -1651,7 +1670,7 @@
         <div class="contact-glow"></div>
         <div class="contact-inner">
             <div class="section-label reveal-up" style="justify-content:center;">Let's Connect</div>
-            <div class="contact-mega reveal-up">
+            <div class="contact-mega reveal-up no-scramble">
                 LET'S<br>
                 <span class="text-gradient-hero">BUILD</span><br>
                 TOGETHER.
@@ -1708,26 +1727,40 @@
         `;
     });
 
-    // ── CURSOR ──
-    const dot = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
+    // ── LIQUID GOOEY CURSOR PHYSICS ──
+    const bubbles = document.querySelectorAll('.goo-bubble');
+    const bubbleCoords = [];
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
 
-    document.addEventListener('mousemove', e => {
-        mouseX = e.clientX; mouseY = e.clientY;
-        dot.style.left = mouseX + 'px';
-        dot.style.top = mouseY + 'px';
+    bubbles.forEach(() => {
+        bubbleCoords.push({ x: mouseX, y: mouseY });
     });
 
-    function animateRing() {
-        ringX += (mouseX - ringX) * 0.12;
-        ringY += (mouseY - ringY) * 0.12;
-        ring.style.left = ringX + 'px';
-        ring.style.top = ringY + 'px';
-        requestAnimationFrame(animateRing);
+    document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function animateGooCursor() {
+        bubbleCoords[0].x = mouseX;
+        bubbleCoords[0].y = mouseY;
+
+        for (let i = 1; i < bubbles.length; i++) {
+            const prev = bubbleCoords[i - 1];
+            const curr = bubbleCoords[i];
+            
+            curr.x += (prev.x - curr.x) * 0.36;
+            curr.y += (prev.y - curr.y) * 0.36;
+        }
+
+        bubbles.forEach((bubble, idx) => {
+            bubble.style.transform = `translate3d(${bubbleCoords[idx].x}px, ${bubbleCoords[idx].y}px, 0) translate(-50%, -50%)`;
+        });
+
+        requestAnimationFrame(animateGooCursor);
     }
-    animateRing();
+    animateGooCursor();
 
     // ── PARTICLE CANVAS (3D Cyber Wave Mesh) ──
     const canvas = document.getElementById('particle-canvas');
@@ -1899,6 +1932,70 @@
     }
     animateCanvas();
 
+    // ── PREMIUM HACKER TEXT DECRYPTION SCRAMBLER ──
+    const scrambleLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+-/<>[]{}';
+    
+    function scramble(element) {
+        if (element.classList.contains('no-scramble')) return;
+        if (element.classList.contains('scrambling')) return;
+        element.classList.add('scrambling');
+        
+        const originalText = element.getAttribute('data-value') || element.innerText;
+        if (!element.getAttribute('data-value')) {
+            element.setAttribute('data-value', originalText);
+        }
+        
+        let iteration = 0;
+        let interval = setInterval(() => {
+            element.innerText = originalText
+                .split('')
+                .map((char, index) => {
+                    if (char === ' ' || char === '\n' || char === '\r') return char;
+                    if (index < iteration) {
+                        return originalText[index];
+                    }
+                    return scrambleLetters[Math.floor(Math.random() * scrambleLetters.length)];
+                })
+                .join('');
+            
+            if (iteration >= originalText.length) {
+                clearInterval(interval);
+                element.classList.remove('scrambling');
+            }
+            iteration += 1/3;
+        }, 25);
+    }
+
+    // Set up hover scrambling (scramble inner spans for roll links to prevent double text content)
+    document.querySelectorAll('.section-title, .section-label, .contact-mega, .nav-links a, .footer-links a').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            const original = el.querySelector('.roll-original');
+            const hover = el.querySelector('.roll-hover');
+            if (original && hover) {
+                scramble(original);
+                scramble(hover);
+            } else {
+                scramble(el);
+            }
+        });
+    });
+
+    // Auto scramble on Viewport Entry
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    scramble(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.section-title, .section-label, .contact-mega').forEach(el => {
+            observer.observe(el);
+        });
+    }
+
     // ── 3D PARALLAX TILT ON CARDS ──
     document.querySelectorAll('.s-card, .w-card').forEach(card => {
         card.addEventListener('mousemove', e => {
@@ -1999,6 +2096,20 @@
             end: 'bottom bottom',
             scrub: 1.2
         }
+    });
+
+    // ── DIAGONAL WIPE REVEAL ANIMATION ──
+    gsap.utils.toArray('.reveal-wipe').forEach(el => {
+        gsap.to(el, {
+            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+            duration: 1.4,
+            ease: 'power3.inOut',
+            scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                toggleActions: 'play none none reverse'
+            }
+        });
     });
 
     // HERO HEADLINE — word-by-word reveal (using fromTo so text is visible even if GSAP fails)

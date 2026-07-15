@@ -41,7 +41,7 @@
             --muted: #64748b;
         }
 
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
 
         body {
             background: var(--bg);
@@ -50,6 +50,7 @@
             overflow-x: hidden;
             cursor: none;
             position: relative;
+            width: 100%;
         }
 
         /* Ambient background glow elements */
@@ -1104,7 +1105,7 @@
 
             /* HERO */
             #hero { padding: 100px 20px 80px; min-height: 100svh; }
-            .hero-headline { font-size: clamp(40px, 12vw, 72px) !important; }
+            .hero-headline { font-size: clamp(34px, 10vw, 52px) !important; line-height: 1.15 !important; }
             .hero-sub { font-size: 0.95rem; max-width: 100%; }
             .hero-stats {
                 flex-wrap: wrap;
@@ -1173,6 +1174,22 @@
                 min-height: 260px;
             }
             .w-name { font-size: 1.3rem; }
+            .w-overlay {
+                opacity: 1 !important;
+                background: linear-gradient(to top, rgba(3,5,7,0.96) 20%, rgba(3,5,7,0.6) 80%, transparent 100%) !important;
+                padding: 24px 20px !important;
+            }
+            .w-desc {
+                font-size: 0.8rem !important;
+                line-height: 1.45 !important;
+                margin-bottom: 12px !important;
+            }
+            .w-link {
+                margin-top: 4px !important;
+            }
+            .w-interact {
+                display: none !important;
+            }
 
             /* CONTACT */
             #contact { padding: 72px 20px; }
@@ -1187,14 +1204,14 @@
             .footer-copy { font-size: 0.7rem; }
 
             /* CURSOR */
-            #cursor-dot, #cursor-ring { display: none; }
+            #cursor-dot, #cursor-ring, .cursor-goo-container { display: none !important; }
             body { cursor: auto !important; }
         }
 
         /* Very small phones: up to 420px */
         @media (max-width: 420px) {
             #hero { padding: 90px 16px 72px; }
-            .hero-headline { font-size: clamp(36px, 13vw, 60px) !important; }
+            .hero-headline { font-size: clamp(28px, 9vw, 42px) !important; line-height: 1.15 !important; }
             .hero-stats { gap: 16px; }
             .stat-number { font-size: 1.5rem; }
             .clients-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -1306,6 +1323,7 @@
     <div class="mobile-nav-drawer" id="mobileDrawer">
         <a href="#hero" class="mob-link">Home</a>
         <a href="#work" class="mob-link">Work</a>
+        <a href="#apps" class="mob-link">Apps</a>
         <a href="#services" class="mob-link">Process</a>
         <a href="seo-results.html" class="mob-link">SEO Results</a>
         <a href="#clients" class="mob-link">Clients</a>
@@ -1520,7 +1538,7 @@
     </section>
 
     <!-- ── MOBILE APPS ── -->
-    <section id="apps" style="padding: 60px 48px 120px; position: relative; z-index: 2; background: #030507;">
+    <section id="apps" style="padding: 60px 48px 120px; position: relative; z-index: 2; background: #030507; overflow: hidden;">
         <!-- Background glows -->
         <div style="position:absolute; top:20%; left:80%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(251,191,36,0.02) 0%,transparent 70%); pointer-events:none;"></div>
         <div style="position:absolute; bottom:10%; left:10%; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(236,72,153,0.02) 0%,transparent 70%); pointer-events:none;"></div>
@@ -1812,7 +1830,7 @@
                                 <p style="font-size:0.92rem; color:var(--muted); line-height:1.7; margin-bottom:0; max-width:440px;">Track leads, automate follow-ups, and scale your brand with a custom digital engine built exclusively by Zhoop.</p>
                             </div>
                             
-                            <div class="ms-float-card" id="fc-5" style="background:#0a0d10; border:1px solid rgba(251,191,36,0.15); border-radius:18px; overflow:hidden; width:460px; box-shadow:0 12px 40px rgba(0,0,0,0.5); opacity:0; transform:translateY(20px) scale(0.95); transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1); text-align:left;">
+                            <div class="ms-float-card" id="fc-5" style="background:#0a0d10; border:1px solid rgba(251,191,36,0.15); border-radius:18px; overflow:hidden; width:100%; max-width:460px; box-shadow:0 12px 40px rgba(0,0,0,0.5); opacity:0; transform:translateY(20px) scale(0.95); transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1); text-align:left;">
                                 <div style="background:rgba(251,191,36,0.08);padding:9px 14px;border-bottom:1px solid rgba(251,191,36,0.15);display:flex;align-items:center;gap:9px;">
                                     <i class="fas fa-chart-line" style="color:#fbbf24;font-size:0.9rem;"></i>
                                     <span style="font-size:0.68rem;color:#fbbf24;font-weight:700;letter-spacing:2px;">CRM DASHBOARD — LIVE DATA</span>
@@ -1928,6 +1946,11 @@
                 text-align: left !important;
                 max-width: 100% !important;
                 width: 100% !important;
+            }
+            .timeline-col-text p {
+                margin-left: 0 !important;
+                margin-right: auto !important;
+                max-width: 100% !important;
             }
         }
     </style>
@@ -2285,6 +2308,7 @@
     });
 
     // ── LIQUID GOOEY CURSOR PHYSICS ──
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const bubbles = document.querySelectorAll('.goo-bubble');
     const bubbleCoords = [];
     let mouseX = window.innerWidth / 2;
@@ -2294,30 +2318,35 @@
         bubbleCoords.push({ x: mouseX, y: mouseY });
     });
 
-    document.addEventListener('mousemove', e => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    function animateGooCursor() {
-        bubbleCoords[0].x = mouseX;
-        bubbleCoords[0].y = mouseY;
-
-        for (let i = 1; i < bubbles.length; i++) {
-            const prev = bubbleCoords[i - 1];
-            const curr = bubbleCoords[i];
-            
-            curr.x += (prev.x - curr.x) * 0.36;
-            curr.y += (prev.y - curr.y) * 0.36;
-        }
-
-        bubbles.forEach((bubble, idx) => {
-            bubble.style.transform = `translate3d(${bubbleCoords[idx].x}px, ${bubbleCoords[idx].y}px, 0) translate(-50%, -50%)`;
+    if (!isTouchDevice) {
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         });
 
-        requestAnimationFrame(animateGooCursor);
+        function animateGooCursor() {
+            bubbleCoords[0].x = mouseX;
+            bubbleCoords[0].y = mouseY;
+
+            for (let i = 1; i < bubbles.length; i++) {
+                const prev = bubbleCoords[i - 1];
+                const curr = bubbleCoords[i];
+                
+                curr.x += (prev.x - curr.x) * 0.36;
+                curr.y += (prev.y - curr.y) * 0.36;
+            }
+
+            bubbles.forEach((bubble, idx) => {
+                bubble.style.transform = `translate3d(${bubbleCoords[idx].x}px, ${bubbleCoords[idx].y}px, 0) translate(-50%, -50%)`;
+            });
+
+            requestAnimationFrame(animateGooCursor);
+        }
+        animateGooCursor();
+    } else {
+        const container = document.querySelector('.cursor-goo-container');
+        if (container) container.style.display = 'none';
     }
-    animateGooCursor();
 
     // ── PARTICLE CANVAS (3D Cyber Wave Mesh) ──
     const canvas = document.getElementById('particle-canvas');

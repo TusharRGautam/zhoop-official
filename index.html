@@ -156,7 +156,11 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
             text-decoration: none;
-            position: relative;
+            color: var(--muted);
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: var(--cyan);
         }
 
         .nav-cta {
@@ -1282,7 +1286,7 @@
         <ul class="nav-links">
             <li><a href="#hero">Home</a></li>
             <li><a href="#work">Work</a></li>
-            <li><a href="#services">Services</a></li>
+            <li><a href="#services">Process</a></li>
             <li><a href="seo-results.html">SEO Results</a></li>
             <li><a href="#clients">Clients</a></li>
             <li><a href="#team">Team</a></li>
@@ -1301,7 +1305,7 @@
     <div class="mobile-nav-drawer" id="mobileDrawer">
         <a href="#hero" class="mob-link">Home</a>
         <a href="#work" class="mob-link">Work</a>
-        <a href="#services" class="mob-link">Services</a>
+        <a href="#services" class="mob-link">Process</a>
         <a href="seo-results.html" class="mob-link">SEO Results</a>
         <a href="#clients" class="mob-link">Clients</a>
         <a href="#team" class="mob-link">Team</a>
@@ -1682,9 +1686,13 @@
                         </div>
                         <!-- Content -->
                         <div class="timeline-content" style="max-width:560px; text-align:center; display:flex; flex-direction:column; align-items:center; margin-top:20px;">
-                            <div style="font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; background:linear-gradient(90deg,#00f5ff,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; margin-bottom:8px;">Final Destination</div>
-                            <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.8rem; font-weight:900; color:white; margin-bottom:10px; line-height:1.2;">Custom CRM &amp; Dynamic Scaling</h3>
-                            <p style="font-size:0.92rem; color:var(--muted); line-height:1.7; margin-bottom:24px; max-width:440px;">Track leads, automate follow-ups, and scale your brand with a custom digital engine built exclusively by Zhoop.</p>
+                            
+                            <!-- Text Background Box -->
+                            <div style="background: rgba(10, 13, 16, 0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 32px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin-bottom: 30px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center;">
+                                <div style="font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; background:linear-gradient(90deg,#00f5ff,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; margin-bottom:12px;">Final Destination</div>
+                                <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.8rem; font-weight:900; color:white; margin-bottom:12px; line-height:1.2;">Custom CRM &amp; Dynamic Scaling</h3>
+                                <p style="font-size:0.92rem; color:var(--muted); line-height:1.7; margin-bottom:0; max-width:440px;">Track leads, automate follow-ups, and scale your brand with a custom digital engine built exclusively by Zhoop.</p>
+                            </div>
                             
                             <div class="ms-float-card" id="fc-5" style="background:#0a0d10; border:1px solid rgba(251,191,36,0.15); border-radius:18px; overflow:hidden; width:460px; box-shadow:0 12px 40px rgba(0,0,0,0.5); opacity:0; transform:translateY(20px) scale(0.95); transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1); text-align:left;">
                                 <div style="background:rgba(251,191,36,0.08);padding:9px 14px;border-bottom:1px solid rgba(251,191,36,0.15);display:flex;align-items:center;gap:9px;">
@@ -2147,7 +2155,7 @@
 
     <script>
     // ── 3D ROLL-TEXT LINK SETUP ──
-    document.querySelectorAll('.nav-links a, .footer-links a').forEach(link => {
+    document.querySelectorAll('.footer-links a').forEach(link => {
         const txt = link.textContent.trim();
         link.classList.add('roll-link');
         link.innerHTML = `
@@ -2398,7 +2406,7 @@
     }
 
     // Set up hover scrambling (scramble inner spans for roll links to prevent double text content)
-    document.querySelectorAll('.section-title, .section-label, .contact-mega, .nav-links a, .footer-links a').forEach(el => {
+    document.querySelectorAll('.section-title, .section-label, .contact-mega, .footer-links a').forEach(el => {
         el.addEventListener('mouseenter', () => {
             const original = el.querySelector('.roll-original');
             const hover = el.querySelector('.roll-hover');

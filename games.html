@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMR7D6N8QB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-QMR7D6N8QB');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zhoop Arcade | Instant H5 Web Games</title>
+    <meta name="title" content="Zhoop Arcade | Instant H5 Web Games">
+    <meta name="description" content="Play free instant H5 web games on Zhoop Arcade. High performance HTML5 games playable in full screen directly in your browser.">
+    <meta name="keywords" content="h5 games, free online games, instant web games, Zhoop Arcade, html5 games">
+    <meta name="author" content="Zhoop Technologies">
+    <link rel="canonical" href="https://zhoop.in/games.html">
+
+    <!-- Favicon & Styles -->
+    <link rel="icon" type="image/webp" href="logo__2_-removebg-preview.webp">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        /* ── GAMES PAGE CUSTOM COMPONENT STYLES ── */
+        .arcade-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 140px 24px 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .arcade-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .arcade-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(38px, 6vw, 76px);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        .arcade-sub {
+            font-size: 1rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Responsive Grid System matching index.html */
+        .arcade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+        }
+
+        /* Game Box Card */
+        .game-box {
+            position: relative;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-box:hover {
+            transform: translateY(-8px);
+            border-color: var(--cyan);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.15);
+        }
+
+        /* Card Art Container */
+        .game-art-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/10;
+            overflow: hidden;
+            background: #05080e;
+        }
+
+        .game-thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            display: block;
+        }
+
+        .game-box:hover .game-thumb-img {
+            transform: scale(1.08);
+            filter: brightness(1.1);
+        }
+
+        .game-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(3, 5, 7, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 100px;
+            z-index: 2;
+        }
+
+        /* Card Content Footer */
+        .game-details {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0d1117;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            flex-grow: 1;
+        }
+
+        .game-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .game-desc {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .game-play-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .game-box:hover .game-play-btn {
+            background: var(--cyan);
+            color: black;
+            box-shadow: 0 0 15px var(--cyan);
+        }
+
+        /* FULLSCREEN MODAL OVERLAY */
+        #game-fullscreen-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #030507;
+            display: none;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #game-fullscreen-modal.active {
+            display: flex !important;
+        }
+
+        .modal-bar {
+            height: 56px;
+            background: rgba(3, 5, 7, 0.95);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .modal-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+        }
+
+        .modal-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .modal-btn-close {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .modal-btn-close:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .iframe-container {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 56px);
+            background: black;
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .loader-overlay {
+            position: absolute;
+            inset: 0;
+            background: #030507;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .arcade-spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 14px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .arcade-container { padding: 110px 16px 60px; }
+            .arcade-grid { grid-template-columns: 1fr; gap: 20px; }
+            .modal-bar { padding: 0 12px; }
+            .modal-btn span { display: none; }
+        }
+    </style>
+    <!-- Google AdSense Monetization Script (Replace ca-pub-XXXXXXXXXXXXXXXX with your AdSense Publisher ID) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- Ambient Glow Backgrounds -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <!-- SVG Gooey Filter -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+                <feBlend in="SourceGraphic" in2="goo" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Custom Liquid Gooey Cursor -->
+    <div class="cursor-goo-container">
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+        <div class="goo-bubble"></div>
+    </div>
+
+    <!-- ── NAVIGATION ── -->
+    <nav id="main-nav">
+        <a href="index.html">
+            <img src="logo__2_-removebg-preview.webp" alt="Zhoop" class="nav-logo">
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#hero">Home</a></li>
+            <li><a href="index.html#work">Work</a></li>
+            <li><a href="games.html" style="color:var(--cyan);font-weight:700;">Games 🕹️</a></li>
+            <li><a href="index.html#services">Process</a></li>
+            <li><a href="seo-results.html">SEO Results</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <a href="https://wa.me/918169151456" target="_blank" class="nav-cta">
+            <span>Let's Talk</span>
+        </a>
+        <div class="nav-mobile-toggle" id="mobileToggle">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <!-- ── MOBILE NAV DRAWER ── -->
+    <div class="mobile-nav-overlay" id="mobileOverlay"></div>
+    <div class="mobile-nav-drawer" id="mobileDrawer">
+        <a href="index.html#hero" class="mob-link">Home</a>
+        <a href="index.html#work" class="mob-link">Work</a>
+        <a href="games.html" class="mob-link" style="color:var(--cyan);">Games 🕹️</a>
+        <a href="seo-results.html" class="mob-link">SEO Results</a>
+        <a href="blog.html" class="mob-link">Blog</a>
+        <a href="index.html#contact" class="mob-link">Contact</a>
+        <a href="https://wa.me/918169151456" target="_blank" class="mob-link mob-cta">Let's Talk</a>
+    </div>
+
+    <!-- ── GAMES ARCADE MAIN CONTAINER ── -->
+    <main class="arcade-container">
+        
+        <div class="arcade-header">
+            <div class="hero-eyebrow" style="opacity: 1; transform: none; margin-bottom: 20px;">
+                <span class="eyebrow-dot"></span>
+                Zhoop Arcade · Instant H5 Web Games
+            </div>
+            <h1 class="arcade-title">
+                PLAY H5 GAMES <br><span class="text-gradient-hero">IN FULL SCREEN</span>
+            </h1>
+            <p class="arcade-sub">
+                No downloads required. Click any game card to launch instant action in a full height & width iframe.
+            </p>
+        </div>
+
+        <!-- RESPONSIVE ARCADE GRID -->
+        
+        <!-- GOOGLE ADSENSE AD BANNER SLOT -->
+        <div style="max-width: 970px; margin: 0 auto 40px; text-align: center; overflow: hidden; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; padding: 12px;">
+            <div style="font-size: 0.65rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;">ADVERTISEMENT</div>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="9876543210"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+
+        <div class="arcade-grid">
+
+            <!-- GAME: Bullet Boy -->
+            <div class="game-box" data-title="Bullet Boy" data-url="https://gamesato.com/games/bullet-boy/play">
+                <div class="game-art-wrap">
+                    <img src="https://www.madkidgames.com/games/bullet-boy/thumb_2.jpg" alt="Bullet Boy" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#00f5ff;">Action</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Bullet Boy</div>
+                        <div class="game-desc">Cannon launching action</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Bounce Tales -->
+            <div class="game-box" data-title="Bounce Tales" data-url="https://gamesato.com/games/bounce-tales/play">
+                <div class="game-art-wrap">
+                    <img src="https://www.madkidgames.com/games/bounce-tales/thumb_2.jpg" alt="Bounce Tales" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#f43f5e;">Retro</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Bounce Tales</div>
+                        <div class="game-desc">Classic red ball bounce</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Banana Kong -->
+            <div class="game-box" data-title="Banana Kong" data-url="https://gamesato.com/games/banana-kong/play">
+                <div class="game-art-wrap">
+                    <img src="https://www.madkidgames.com/games/banana-kong/thumb_2.jpg" alt="Banana Kong" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#eab308;">Runner</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Banana Kong</div>
+                        <div class="game-desc">Jungle runner adventure</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Bouncemasters Penguin -->
+            <div class="game-box" data-title="Bouncemasters Penguin" data-url="https://gamesato.com/games/bouncemasters-penguin-games/play">
+                <div class="game-art-wrap">
+                    <img src="https://www.madkidgames.com/games/bouncemasters-penguin-games/thumb_2.jpg" alt="Bouncemasters Penguin" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#38bdf8;">Arcade</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Bouncemasters Penguin</div>
+                        <div class="game-desc">Penguin launcher game</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Solitaire 2048 -->
+            <div class="game-box" data-title="Solitaire 2048" data-url="https://gamesato.com/games/solitaire-2048/play">
+                <div class="game-art-wrap">
+                    <img src="assets/icon-512.png" alt="Solitaire 2048" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#a855f7;">Puzzle</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Solitaire 2048</div>
+                        <div class="game-desc">Card merging puzzle</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Stick War -->
+            <div class="game-box" data-title="Stick War" data-url="https://gamesato.com/games/stick-war/play">
+                <div class="game-art-wrap">
+                    <img src="https://www.madkidgames.com/games/stick-war-legacy/thumb_2.jpg" alt="Stick War" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#ef4444;">Strategy</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Stick War</div>
+                        <div class="game-desc">Stickman army battle</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Cut The Candy -->
+            <div class="game-box" data-title="Cut The Candy" data-url="https://gamesato.com/games/cut-the-candy/play">
+                <div class="game-art-wrap">
+                    <img src="assets/cut-the-candy-1785092496334.png" alt="Cut The Candy" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#ec4899;">Casual</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Cut The Candy</div>
+                        <div class="game-desc">Rope slicing physics</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Johnny Trigger -->
+            <div class="game-box" data-title="Johnny Trigger" data-url="https://gamesato.com/games/johnny-trigger-action-shooter/play">
+                <div class="game-art-wrap">
+                    <img src="https://www.madkidgames.com/games/johnny-trigger-action-shooter/thumb_2.jpg" alt="Johnny Trigger" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#f97316;">Shooter</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Johnny Trigger</div>
+                        <div class="game-desc">Slow-mo action shooter</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Number Snake -->
+            <div class="game-box" data-title="Number Snake" data-url="https://gamesato.com/games/number-snake/play">
+                <div class="game-art-wrap">
+                    <img src="assets/number-snake.jpeg" alt="Number Snake" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#10b981;">Snake</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Number Snake</div>
+                        <div class="game-desc">Grow snake & break blocks</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+            <!-- GAME: Wave Run -->
+            <div class="game-box" data-title="Wave Run" data-url="https://gamesato.com/games/wave-run/play">
+                <div class="game-art-wrap">
+                    <img src="assets/wave-run.png" alt="Wave Run" class="game-thumb-img" loading="lazy">
+                    <span class="game-badge" style="color:#3b82f6;">Cyber</span>
+                </div>
+                <div class="game-details">
+                    <div>
+                        <div class="game-name">Wave Run</div>
+                        <div class="game-desc">Futuristic wave runner</div>
+                    </div>
+                    <div class="game-play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FULLSCREEN GAME IFRAME MODAL OVERLAY -->
+    <div id="game-fullscreen-modal">
+        <div class="modal-bar">
+            <div class="modal-title-wrap">
+                <img src="logo__2_-removebg-preview.webp" alt="Zhoop Logo" style="height: 24px;">
+                <div class="modal-title" id="modal-game-title">Playing Game</div>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-reload-game" class="modal-btn" title="Reload Game">
+                    <i class="fas fa-rotate-right"></i> <span>Reload</span>
+                </button>
+                <button id="btn-fullscreen" class="modal-btn" title="Fullscreen">
+                    <i class="fas fa-expand"></i> <span>Fullscreen</span>
+                </button>
+                <button id="btn-close-modal" class="modal-btn modal-btn-close">
+                    <i class="fas fa-xmark"></i> <span>Close</span>
+                </button>
+            </div>
+        </div>
+        <div class="iframe-container">
+            <div id="game-loader" class="loader-overlay">
+                <div class="arcade-spinner"></div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);">Loading Game...</div>
+            </div>
+            <iframe id="game-iframe" src="" allow="fullscreen; autoplay; payment; accelerometer; gyroscope" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <img src="logo__2_-removebg-preview.webp" alt="Zhoop" style="height:36px;opacity:0.8;">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="games.html">Games</a>
+            <a href="seo-results.html">SEO Results</a>
+            <a href="blog.html">Blog</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+        <div class="footer-copy">© 2025 Zhoop Technologies. All rights reserved.</div>
+    </footer>
+
+    <!-- JS Logic -->
+    <script src="js/main.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameBoxes = document.querySelectorAll('.game-box');
+            const modal = document.getElementById('game-fullscreen-modal');
+            const iframe = document.getElementById('game-iframe');
+            const loader = document.getElementById('game-loader');
+            const modalTitle = document.getElementById('modal-game-title');
+            const btnClose = document.getElementById('btn-close-modal');
+            const btnReload = document.getElementById('btn-reload-game');
+            const btnFullscreen = document.getElementById('btn-fullscreen');
+
+            let currentUrl = '';
+
+            gameBoxes.forEach(box => {
+                box.addEventListener('click', () => {
+                    const title = box.getAttribute('data-title');
+                    const url = box.getAttribute('data-url');
+                    currentUrl = url;
+
+                    modalTitle.textContent = title;
+                    loader.style.display = 'flex';
+                    iframe.src = url;
+
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            iframe.addEventListener('load', () => {
+                loader.style.display = 'none';
+            });
+
+            function closeModal() {
+                modal.classList.remove('active');
+                iframe.src = '';
+                document.body.style.overflow = '';
+            }
+
+            btnClose.addEventListener('click', closeModal);
+
+            btnReload.addEventListener('click', () => {
+                if (currentUrl) {
+                    loader.style.display = 'flex';
+                    iframe.src = currentUrl;
+                }
+            });
+
+            btnFullscreen.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    modal.requestFullscreen().catch(err => console.error(err));
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

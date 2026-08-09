@@ -11,7 +11,15 @@
             --muted: #64748b;
         }
 
-        html { scroll-behavior: smooth; overflow-x: hidden; }
+        html { 
+            scroll-behavior: smooth; 
+            scroll-padding-top: 95px; 
+            overflow-x: hidden; 
+        }
+
+        section, [id] {
+            scroll-margin-top: 95px;
+        }
 
         body {
             background: var(--bg);

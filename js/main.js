@@ -1,12 +1,5 @@
 
-    // ── MOBILE TOUCH OPTIMIZATION FOR LIQUID CURSOR ──
-    const isDesktopPointer = window.matchMedia('(pointer: fine)').matches;
-    const gooContainer = document.querySelector('.cursor-goo-container');
-    if (!isDesktopPointer && gooContainer) {
-        gooContainer.style.display = 'none';
-    }
-
-// ── 3D ROLL-TEXT LINK SETUP ──
+    // ── 3D ROLL-TEXT LINK SETUP ──
     document.querySelectorAll('.footer-links a').forEach(link => {
         const txt = link.textContent.trim();
         link.classList.add('roll-link');
@@ -17,47 +10,6 @@
             </span>
         `;
     });
-
-    // ── LIQUID GOOEY CURSOR PHYSICS ──
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const bubbles = document.querySelectorAll('.goo-bubble');
-    const bubbleCoords = [];
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-
-    bubbles.forEach(() => {
-        bubbleCoords.push({ x: mouseX, y: mouseY });
-    });
-
-    if (!isTouchDevice) {
-        document.addEventListener('mousemove', e => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        function animateGooCursor() {
-            bubbleCoords[0].x = mouseX;
-            bubbleCoords[0].y = mouseY;
-
-            for (let i = 1; i < bubbles.length; i++) {
-                const prev = bubbleCoords[i - 1];
-                const curr = bubbleCoords[i];
-                
-                curr.x += (prev.x - curr.x) * 0.36;
-                curr.y += (prev.y - curr.y) * 0.36;
-            }
-
-            bubbles.forEach((bubble, idx) => {
-                bubble.style.transform = `translate3d(${bubbleCoords[idx].x}px, ${bubbleCoords[idx].y}px, 0) translate(-50%, -50%)`;
-            });
-
-            requestAnimationFrame(animateGooCursor);
-        }
-        animateGooCursor();
-    } else {
-        const container = document.querySelector('.cursor-goo-container');
-        if (container) container.style.display = 'none';
-    }
 
     // ── PARTICLE CANVAS (3D Cyber Wave Mesh) ──
     const canvas = document.getElementById('particle-canvas');

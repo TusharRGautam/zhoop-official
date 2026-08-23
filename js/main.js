@@ -1,4 +1,27 @@
 
+    // ── STICKY TOP LOCK ON LOAD (PREVENTS ANY JUMP DOWN OR UP) ──
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    if (!window.location.hash) {
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo(0, 0);
+    }
+
+    window.addEventListener('load', () => {
+        if (!window.location.hash) {
+            document.documentElement.style.scrollBehavior = 'auto';
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                document.documentElement.style.scrollBehavior = 'smooth';
+            }, 100);
+        } else {
+            document.documentElement.style.scrollBehavior = 'smooth';
+        }
+    });
+
+
     // ── 3D ROLL-TEXT LINK SETUP ──
     document.querySelectorAll('.footer-links a').forEach(link => {
         const txt = link.textContent.trim();
@@ -453,16 +476,24 @@
     // WORK MOSAIC — click to interact
     document.querySelectorAll('.w-card').forEach(card => {
         card.addEventListener('click', function(e) {
-            // Only activate iframe if clicking the interact button
+            // Don't intercept if clicking direct external link
+            if (e.target.closest('.w-link')) return;
+
             const interactBtn = this.querySelector('.w-interact');
-            if (!interactBtn || interactBtn.classList.contains('hidden')) return;
             const iframe = this.querySelector('iframe');
             if (iframe) {
+                const dataSrc = iframe.getAttribute('data-src');
+                if (dataSrc && (!iframe.src || iframe.src === 'about:blank' || iframe.src === window.location.href)) {
+                    iframe.src = dataSrc;
+                }
                 iframe.style.pointerEvents = 'auto';
-                interactBtn.classList.add('hidden');
+                iframe.style.opacity = '1';
+                if (interactBtn) interactBtn.classList.add('hidden');
+                const previewImg = this.querySelector('.w-preview-img, .w-preview-content');
+                if (previewImg) previewImg.style.opacity = '0';
                 const overlay = this.querySelector('.w-overlay');
                 if (overlay) overlay.style.opacity = '0';
-                setTimeout(() => { if (overlay) overlay.style.opacity = ''; }, 2000);
+                setTimeout(() => { if (overlay) overlay.style.opacity = ''; }, 2500);
             } else {
                 // If there's no iframe, open the data-url link in a new tab
                 const url = this.getAttribute('data-url');
@@ -486,9 +517,11 @@
     // IFRAME FADE IN on load
     document.querySelectorAll('.w-iframe-wrap iframe').forEach(iframe => {
         iframe.style.pointerEvents = 'none';
-        iframe.addEventListener('load', () => { iframe.style.opacity = '1'; });
-        // Failsafe
-        setTimeout(() => { iframe.style.opacity = '1'; }, 3000);
+        iframe.addEventListener('load', () => {
+            if (iframe.src && iframe.src !== 'about:blank' && iframe.src !== window.location.href) {
+                iframe.style.opacity = '1';
+            }
+        });
     });
 
     // NAV SCROLL EFFECT
@@ -556,7 +589,7 @@
         // 1. Progress line filling - only grows, never shrinks on scroll up
         let maxProgress = 0;
         ScrollTrigger.create({
-            trigger: '#growth-journey',
+            trigger: '#process',
             start: 'top 75%',
             end: 'bottom 25%',
             onUpdate(self) {
@@ -645,9 +678,11 @@
         initGrowthJourney();
     }
 
-    // Fallback: Refresh ScrollTrigger when heavy iframes / images finish loading to match correct layout heights
+    // Fallback: Refresh ScrollTrigger safely without viewport scrolling
     window.addEventListener('load', () => {
-        ScrollTrigger.refresh();
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.config({ autoRefreshEvents: "visibilitychange,DOMContentLoaded,resize" });
+        }
     });
 
     // ── CONTACT FORM HANDLER (WHATSAPP & EMAIL) ──
@@ -698,10 +733,6 @@
                     top: targetPosition,
                     behavior: 'smooth'
                 });
-                
-                if (history.pushState) {
-                    history.pushState(null, null, targetId);
-                }
             }
         });
     });

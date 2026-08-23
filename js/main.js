@@ -473,33 +473,15 @@
         });
     });
 
-    // WORK MOSAIC — click to interact
+    // WORK SHOWCASE — click to open project
     document.querySelectorAll('.w-card').forEach(card => {
         card.addEventListener('click', function(e) {
             // Don't intercept if clicking direct external link
-            if (e.target.closest('.w-link')) return;
+            if (e.target.closest('.w-link, .w-link-btn')) return;
 
-            const interactBtn = this.querySelector('.w-interact');
-            const iframe = this.querySelector('iframe');
-            if (iframe) {
-                const dataSrc = iframe.getAttribute('data-src');
-                if (dataSrc && (!iframe.src || iframe.src === 'about:blank' || iframe.src === window.location.href)) {
-                    iframe.src = dataSrc;
-                }
-                iframe.style.pointerEvents = 'auto';
-                iframe.style.opacity = '1';
-                if (interactBtn) interactBtn.classList.add('hidden');
-                const previewImg = this.querySelector('.w-preview-img, .w-preview-content');
-                if (previewImg) previewImg.style.opacity = '0';
-                const overlay = this.querySelector('.w-overlay');
-                if (overlay) overlay.style.opacity = '0';
-                setTimeout(() => { if (overlay) overlay.style.opacity = ''; }, 2500);
-            } else {
-                // If there's no iframe, open the data-url link in a new tab
-                const url = this.getAttribute('data-url');
-                if (url) {
-                    window.open(url, '_blank');
-                }
+            const url = this.getAttribute('data-url');
+            if (url) {
+                window.open(url, '_blank');
             }
         });
     });

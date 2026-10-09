@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev": "serve -l 3000 -n",
+    "start": "serve -l 3000 -n",
+    "build:css": "tailwindcss -i ./css/input.css -o ./css/tailwind.min.css --minify",
+    "watch:css": "tailwindcss -i ./css/input.css -o ./css/tailwind.min.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,6 +15,7 @@
   "description": "",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
+    "serve": "^14.2.6",
     "tailwindcss": "^4.3.3"
   }
 }
